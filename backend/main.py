@@ -6,6 +6,7 @@ import requests
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 # .env 読み込み
 load_dotenv()
@@ -86,3 +87,20 @@ async def generate_image(file: UploadFile, prompt: str = Form(...)):
     else:
         logger.warning("画像が生成されなかった")
         return {"error": "画像が生成されませんでした", "raw_response": data}
+
+
+# Svelteのビルド成果物を置いたディレクトリ（例：backend/static）
+STATIC_DIR = os.getenv("STATIC_DIR", os.path.join(os.path.dirname(__file__), "static"))
+
+# API ルートより “後” にマウントすること（順序大事）
+# html=True で index.html にフォールバック（SPA対応）
+if os.path.exists(STATIC_DIR):
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="frontend")
+else:
+    logger.warning(f"STATIC_DIR not found: {STATIC_DIR}")
+
+
+# 任意：Cloud Run ヘルスチェック
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}

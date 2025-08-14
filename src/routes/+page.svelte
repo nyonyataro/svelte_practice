@@ -9,7 +9,8 @@
     let generatedImageUrl = $state("");
     let errorMessage = $state("");
     import { PUBLIC_API_BASE } from "$env/static/public";
-    const API_URL = `${PUBLIC_API_BASE ?? "http://127.0.0.1:8000"}/generate`;
+    // const API_URL = `${PUBLIC_API_BASE ?? "http://127.0.0.1:8000"}/generate`;
+    const API_URL = "/generate";
     // 追加: UI/UX用の状態
     let fileInput: HTMLInputElement | null = null;
     let uploadError = $state<string | null>(null);
